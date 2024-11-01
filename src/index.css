@@ -16,3 +16,18 @@
     overflow: hidden;
   }
 }
+
+.movie-card {
+  /* existing styles... */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
+  touch-action: manipulation; /* Optimize for touch */
+  user-select: none; /* Prevent text selection while tapping */
+}
+
+/* Ensure touch events aren't blocked by any hover states */
+@media (hover: none) {
+  .movie-card:hover {
+    transform: none;
+  }
+}
