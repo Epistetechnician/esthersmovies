@@ -11,16 +11,36 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ movie, isScratched, onScratch }: MovieCardProps) {
-  const handleReveal = () => {
-    // Trigger confetti effect
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#FFD700', '#FFA500', '#FF6347', '#FF69B4', '#DDA0DD'],
-      zIndex: 2000,
-      disableForReducedMotion: true
-    });
+  const handleReveal = async () => {
+    try {
+      // Try vibration first
+      if ('vibrate' in navigator && navigator.vibrate) {
+        console.log('Attempting vibration...');
+        await navigator.vibrate(200); // Increased duration for better feedback
+      } else {
+        console.log('Vibration API not supported');
+      }
+
+      // Try confetti with mobile-optimized settings
+      console.log('Attempting confetti...');
+      confetti({
+        particleCount: 50, // Reduced for better mobile performance
+        spread: 70,
+        origin: { 
+          x: 0.5,
+          y: 0.6 
+        },
+        colors: ['#FFD700', '#FFA500', '#FF6347', '#FF69B4', '#DDA0DD'],
+        zIndex: 9999, // Increased to ensure visibility
+        disableForReducedMotion: true,
+        scalar: 1.5, // Increased size for better visibility on mobile
+        gravity: 1.5, // Increased gravity for faster animation
+        startVelocity: 20, // Reduced for better mobile performance
+        ticks: 150 // Reduced duration for mobile
+      });
+    } catch (error) {
+      console.error('Error in handleReveal:', error);
+    }
     
     onScratch(movie.id);
   };
