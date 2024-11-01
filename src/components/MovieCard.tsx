@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { Movie } from '../data/movies';
 import { motion } from 'framer-motion';
 import { ScratchCard } from './scratchoff';
@@ -11,54 +11,32 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ movie, isScratched, onScratch }: MovieCardProps) {
-  // Create canvas element for confetti on component mount
-  useEffect(() => {
-    const canvas = document.createElement('canvas');
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100vw';
-    canvas.style.height = '100vh';
-    canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '9999';
-    document.body.appendChild(canvas);
-
-    return () => {
-      document.body.removeChild(canvas);
-    };
-  }, []);
-
   const handleReveal = async () => {
     try {
-      // Request vibration permission if available
+      // Try vibration first
       if ('vibrate' in navigator && navigator.vibrate) {
-        // Check if we need to request permission (not all browsers require this)
-        if ('permissions' in navigator) {
-          try {
-            const permission = await navigator.permissions.query({ name: 'vibrate' as PermissionName });
-            if (permission.state === 'granted') {
-              await navigator.vibrate([100, 50, 100]);
-            }
-          } catch (e) {
-            // If permission query fails, try vibration anyway
-            await navigator.vibrate([100, 50, 100]);
-          }
-        } else {
-          // If permissions API is not available, try vibration directly
-          await navigator.vibrate([100, 50, 100]);
-        }
+        console.log('Attempting vibration...');
+        await navigator.vibrate(200); // Increased duration for better feedback
+      } else {
+        console.log('Vibration API not supported');
       }
 
-      // Simpler confetti configuration
+      // Try confetti with mobile-optimized settings
+      console.log('Attempting confetti...');
       confetti({
-        particleCount: 50,
+        particleCount: 50, // Reduced for better mobile performance
         spread: 70,
-        origin: { y: 0.6 },
+        origin: { 
+          x: 0.5,
+          y: 0.6 
+        },
         colors: ['#FFD700', '#FFA500', '#FF6347', '#FF69B4', '#DDA0DD'],
-        zIndex: 9999,
+        zIndex: 9999, // Increased to ensure visibility
         disableForReducedMotion: true,
-        scalar: 2,
-        startVelocity: 20,
+        scalar: 1.5, // Increased size for better visibility on mobile
+        gravity: 1.5, // Increased gravity for faster animation
+        startVelocity: 20, // Reduced for better mobile performance
+        ticks: 150 // Reduced duration for mobile
       });
     } catch (error) {
       console.error('Error in handleReveal:', error);
