@@ -13,7 +13,7 @@ export const movies: Movie[] = [
     title: "The Shawshank Redemption",
     year: 1994,
     icon: "🔨",
-    posterUrl: "https://github.com/Epistetechnician/esthersmovies/blob/main/cropped_posters/movie_poster_001.jpg"
+    posterUrl: "https://github.com/Epistetechnician/esthersmovies/blob/main/cropped_posters/movie_poster_001.jpg?raw=true"
   },
   {
     id: 2,
