@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { Movie } from '../data/movies';
 import { motion } from 'framer-motion';
 import { ScratchCard } from './scratchoff';
@@ -11,22 +11,68 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ movie, isScratched, onScratch }: MovieCardProps) {
-  const handleReveal = () => {
-    // Trigger confetti effect
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#FFD700', '#FFA500', '#FF6347', '#FF69B4', '#DDA0DD'],
-      zIndex: 2000,
-      disableForReducedMotion: true
-    });
+  // Create canvas element for confetti on component mount
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '9999';
+    document.body.appendChild(canvas);
+
+    return () => {
+      document.body.removeChild(canvas);
+    };
+  }, []);
+
+  const handleReveal = async () => {
+    try {
+      // Request vibration permission if available
+      if ('vibrate' in navigator && navigator.vibrate) {
+        // Check if we need to request permission (not all browsers require this)
+        if ('permissions' in navigator) {
+          try {
+            const permission = await navigator.permissions.query({ name: 'vibrate' as PermissionName });
+            if (permission.state === 'granted') {
+              await navigator.vibrate([100, 50, 100]);
+            }
+          } catch (e) {
+            // If permission query fails, try vibration anyway
+            await navigator.vibrate([100, 50, 100]);
+          }
+        } else {
+          // If permissions API is not available, try vibration directly
+          await navigator.vibrate([100, 50, 100]);
+        }
+      }
+
+      // Simpler confetti configuration
+      confetti({
+        particleCount: 50,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#FFD700', '#FFA500', '#FF6347', '#FF69B4', '#DDA0DD'],
+        zIndex: 9999,
+        disableForReducedMotion: true,
+        scalar: 2,
+        startVelocity: 20,
+      });
+    } catch (error) {
+      console.error('Error in handleReveal:', error);
+    }
     
     onScratch(movie.id);
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div 
+      className="movie-card"
+      role="button"
+      tabIndex={0}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
