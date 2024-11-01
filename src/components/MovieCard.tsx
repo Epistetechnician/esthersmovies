@@ -26,7 +26,11 @@ export function MovieCard({ movie, isScratched, onScratch }: MovieCardProps) {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div 
+      className="movie-card"
+      role="button"
+      tabIndex={0}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
