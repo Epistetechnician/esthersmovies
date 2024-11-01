@@ -14,7 +14,7 @@ export const movies: Movie[] = [
     year: 1994,
     icon: "🔨",
     posterUrl: "https://github.com/Epistetechnician/esthersmovies/blob/main/cropped_posters/movie_poster_001.jpg"
-  }
+  },
   {
     id: 2,
     title: "The Godfather",
