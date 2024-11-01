@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { Movie } from '../data/movies';
 import { motion } from 'framer-motion';
 import { ScratchCard } from './scratchoff';
@@ -11,32 +11,50 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ movie, isScratched, onScratch }: MovieCardProps) {
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '9999';
+    document.body.appendChild(canvas);
+
+    return () => {
+      document.body.removeChild(canvas);
+    };
+  }, []);
+
   const handleReveal = async () => {
     try {
-      // Try vibration first
-      if ('vibrate' in navigator && navigator.vibrate) {
-        console.log('Attempting vibration...');
-        await navigator.vibrate(200); // Increased duration for better feedback
-      } else {
-        console.log('Vibration API not supported');
+      // Check for vibration support and try to vibrate
+      if ('vibrate' in navigator && typeof navigator.vibrate === 'function') {
+        try {
+          if ('permissions' in navigator) {
+            const permission = await navigator.permissions.query({ name: 'vibrate' as PermissionName });
+            if (permission.state === 'granted') {
+              navigator.vibrate([100, 50, 100]);
+            }
+          } else {
+            navigator;
+          }
+        } catch (e) {
+          console.log('Vibration failed:', e);
+        }
       }
 
-      // Try confetti with mobile-optimized settings
-      console.log('Attempting confetti...');
+      // Simpler confetti configuration
       confetti({
-        particleCount: 50, // Reduced for better mobile performance
+        particleCount: 50,
         spread: 70,
-        origin: { 
-          x: 0.5,
-          y: 0.6 
-        },
+        origin: { y: 0.6 },
         colors: ['#FFD700', '#FFA500', '#FF6347', '#FF69B4', '#DDA0DD'],
-        zIndex: 9999, // Increased to ensure visibility
+        zIndex: 9999,
         disableForReducedMotion: true,
-        scalar: 1.5, // Increased size for better visibility on mobile
-        gravity: 1.5, // Increased gravity for faster animation
-        startVelocity: 20, // Reduced for better mobile performance
-        ticks: 150 // Reduced duration for mobile
+        scalar: 2,
+        startVelocity: 20,
       });
     } catch (error) {
       console.error('Error in handleReveal:', error);
