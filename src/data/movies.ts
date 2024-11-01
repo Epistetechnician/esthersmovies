@@ -24,9 +24,9 @@ export const movies: Movie[] = [
   },
   {
     id: 3,
-    title: "No Country for Old Men",
-    year: 2007,
-    icon: "💰",
+    title: "The Godfather: Part II",
+    year: 1974,
+    icon: "👴🏼",
     posterUrl: "https://github.com/Epistetechnician/esthersmovies/blob/main/cropped_posters/movie_poster_003.jpg?raw=true"
   },
   {
@@ -423,9 +423,9 @@ export const movies: Movie[] = [
   },
   {
     id: 59,
-    title: "Avengers: Infinity War",
-    year: 2018,
-    icon: "🌟",
+    title: "No Country for Old Men",
+    year: 2007,
+    icon: "👴",
     posterUrl: "https://github.com/Epistetechnician/esthersmovies/blob/main/cropped_posters/movie_poster_059.jpg?raw=true"
   },
   {
